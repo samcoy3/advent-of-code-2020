@@ -4,13 +4,13 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: c048de24b751a122b2e914acaa90bbd5e796a925ef6214118e4891baf487f88f
+-- hash: 4950251a86cb58c7542dfc3c8980d632b722badbfd66111cd026b64e9e260bc2
 
-name:           aoc-template
+name:           aoc2020
 version:        0.1.0.0
-description:    A template for Advent of Code projects in Haskell
-homepage:       https://github.com/samcoy3/advent-of-code-template#readme
-bug-reports:    https://github.com/samcoy3/advent-of-code-template/issues
+description:    My Advent of Code solutions for 2020, written in Haskell.
+homepage:       https://github.com/samcoy3/advent-of-code-2020#readme
+bug-reports:    https://github.com/samcoy3/advent-of-code-2020/issues
 author:         Sam Coy
 maintainer:     samcoy3@gmail.com
 copyright:      2020 Sam Coy
@@ -22,7 +22,7 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/samcoy3/advent-of-code-template
+  location: https://github.com/samcoy3/advent-of-code-2020
 
 library
   exposed-modules:
@@ -55,7 +55,7 @@ library
       Util.Parsers
       Util.Util
   other-modules:
-      Paths_aoc_template
+      Paths_aoc2020
   hs-source-dirs:
       src
   default-extensions: EmptyCase FlexibleContexts FlexibleInstances InstanceSigs MultiParamTypeClasses LambdaCase MultiWayIf RecordWildCards TupleSections OverloadedStrings ScopedTypeVariables GADTs NumericUnderscores DeriveFunctor DeriveFoldable
@@ -75,13 +75,13 @@ library
 executable aoc-template-exe
   main-is: Main.hs
   other-modules:
-      Paths_aoc_template
+      Paths_aoc2020
   hs-source-dirs:
       app
   default-extensions: EmptyCase FlexibleContexts FlexibleInstances InstanceSigs MultiParamTypeClasses LambdaCase MultiWayIf RecordWildCards TupleSections OverloadedStrings ScopedTypeVariables GADTs NumericUnderscores DeriveFunctor DeriveFoldable
   ghc-options: -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aoc-template
+      aoc2020
     , attoparsec
     , base >=4.7 && <5
     , containers

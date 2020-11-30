@@ -1,6 +1,6 @@
-name:                aoc-template
+name:                aoc2020
 version:             0.1.0.0
-github:              "samcoy3/advent-of-code-template"
+github:              "samcoy3/advent-of-code-2020"
 license:             BSD3
 author:              "Sam Coy"
 maintainer:          "samcoy3@gmail.com"
@@ -16,7 +16,7 @@ extra-source-files:
 # To avoid duplicated efforts in documentation and dealing with the
 # complications of embedding Haddock markup inside cabal files, it is
 # common to point users to the README.md file.
-description:         A template for Advent of Code projects in Haskell
+description:         My Advent of Code solutions for 2020, written in Haskell.
 
 dependencies:
 - base >= 4.7 && < 5
@@ -74,4 +74,4 @@ executables:
     - DeriveFunctor
     - DeriveFoldable
     dependencies:
-    - aoc-template
+    - aoc2020
