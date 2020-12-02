@@ -4,6 +4,7 @@ module Days.Day02 (runDay) where
 import Data.Bits (xor)
 import qualified Data.Map.Strict as Map
 import qualified Util.Util as U
+import Util.Parsers
 
 import qualified Program.RunDay as R (runDay)
 import Data.Attoparsec.Text
@@ -17,14 +18,12 @@ inputParser :: Parser Input
 inputParser = ruleAndPassword `sepBy` endOfLine
   where
     ruleAndPassword = do
-      min <- decimal
-      char '-'
-      max <- decimal
+      (min, max) <- decimal `around` char '-'
       skipSpace
-      given <- letter
-      asciiCI ": "
+      givenLetter <- letter
+      string ": "
       password <- many1 letter
-      return (PasswordRule {min = min, max = max, givenLetter = given}, password)
+      return (PasswordRule {..}, password)
 
 ------------ TYPES ------------
 type Password = String
