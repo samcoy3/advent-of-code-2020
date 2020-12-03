@@ -29,6 +29,8 @@ type OutputA = Int
 type OutputB = Int
 
 ------------ PART A ------------
+-- Takes a map of objects, an x-difference between each step, and a y-difference between each step.
+-- Returns the number of trees hit.
 slope :: Input -> Int -> Int -> Int
 slope m x y =
   -- Need to add one to the width because the map is zero-indexed
