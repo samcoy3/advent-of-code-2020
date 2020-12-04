@@ -55,38 +55,42 @@ partA :: Input -> OutputA
 partA = length . filter correctFields
 
 ------------ PART B ------------
--- Given two parsers, provides a parser that checks if a number is in some bounds.
+-- Given two ints, provides a parser that checks if a number is between them.
 inRangeInclusive :: Int -> Int -> Int -> Parser ()
 inRangeInclusive min max x = guard (x >= min && x <= max)
 
-{-
-In this part, we:
-* Create a list of the values of the fields, in alphabetic order ("byr", "ecl"...)
-* Create a list of parsers for these fields
-* Zip them together with parser application, giving us a list of Either String () values
-* Sequence this list, giving us an Either String [()]
-* If this value isRight (i.e. Right [()]), then all parsers have succeeded and our passport is valid.
-N.B. "void" discards the value of a Parser, giving us a Parser () (it's of type Parser a -> Parser ())
--}
+-- A map from the fields of the passport to parsers that succeed if and only if the value in that field is valid.
+-- N.B. "void" discards the output type of a parser, i.e. it's a function from Parser a -> Parser ()
+passportValidators :: Map String (Parser ())
+passportValidators =
+  Map.fromList
+    . zip ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+    $ [ decimal >>= inRangeInclusive 1920 2002,
+        decimal >>= inRangeInclusive 2010 2020,
+        decimal >>= inRangeInclusive 2020 2030,
+        void
+          ( choice
+              [ decimal >>= inRangeInclusive 150 195 >> string "cm",
+                decimal >>= inRangeInclusive 59 76 >> string "in"
+              ]
+          ),
+        char '#' >> void (count 6 (satisfy $ inClass "0-9a-f")),
+        void (choice (fmap string ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])),
+        void (count 9 digit)
+      ]
+
 partB :: Input -> OutputB
-partB = length . filter validPassport . (fmap (Map.delete "cid")) . filter correctFields
+partB = length . filter validPassport . filter correctFields
   where
-    validPassport p =
-      let fieldsInOrder = fmap pack . fmap snd . sortBy (compare `on` fst) . Map.toList $ p
-          conditions =
-            [ decimal >>= inRangeInclusive 1920 2002,
-              void (choice (fmap string ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"])),
-              decimal >>= inRangeInclusive 2020 2030,
-              char '#' >> void (count 6 (satisfy $ inClass "0-9a-f")),
-              void
-                ( choice
-                    [ decimal >>= inRangeInclusive 150 195 >> string "cm",
-                      decimal >>= inRangeInclusive 59 76 >> string "in"
-                    ]
-                ),
-              decimal >>= inRangeInclusive 2010 2020,
-              void (count 9 digit)
-            ]
-       in isRight
-            . sequence
-            $ zipWith (\p f -> parseOnly (p <* endOfInput) f) conditions fieldsInOrder
+    {-
+    In this predicate, we:
+    * Combine the passport with the passport validation map, applying the parser to the relevant value. This gives us a Map String (Either String ())
+    * Sequence this result, giving us an Either String  (Map String ()), which will be successful if and only if all fields parsed successfully.
+    * Check if this value isRight (i.e. is of type Right (Map String ())).
+    -}
+    validPassport =
+      isRight
+        . sequence
+        . Map.intersectionWith
+          (\parser value -> parseOnly (parser <* endOfInput) (pack value))
+          passportValidators
