@@ -41,9 +41,11 @@ type OutputA = Int
 type OutputB = Int
 
 ------------ PART A ------------
--- We check that if we delete "cid" from the list of keys (a no-op if it isn't present),
---   then we end up with the seven mandatory keys.
--- Note that this protects against the problem of rogue keys appearing in the input.
+{-
+We check that if we delete "cid" from the list of keys (a no-op if it isn't present),
+  then we end up with the seven mandatory keys.
+Note that this protects against the problem of rogue keys appearing in the input.
+-}
 correctFields :: Map String String -> Bool
 correctFields p =
   (Set.delete "cid" (Set.fromList . Map.keys $ p))
@@ -57,19 +59,15 @@ partA = length . filter correctFields
 inRangeInclusive :: Int -> Int -> Int -> Parser ()
 inRangeInclusive min max x = guard (x >= min && x <= max)
 
--- In this part, we:
-
--- * Create a list of the values of the fields, in alphabetic order ("byr", "ecl"...)
-
--- * Create a list of parsers for these fields
-
--- * Zip them together with parser application, giving us a list of Either String () values
-
--- * Sequence this list, giving us an Either String [()]
-
--- * If this value isRight (i.e. Right [()]), then all parsers have succeeded and our passport is valid.
-
--- N.B. "void" discards the value of a Parser, giving us a Parser () (it's of type Parser a -> Parser ())
+{-
+In this part, we:
+* Create a list of the values of the fields, in alphabetic order ("byr", "ecl"...)
+* Create a list of parsers for these fields
+* Zip them together with parser application, giving us a list of Either String () values
+* Sequence this list, giving us an Either String [()]
+* If this value isRight (i.e. Right [()]), then all parsers have succeeded and our passport is valid.
+N.B. "void" discards the value of a Parser, giving us a Parser () (it's of type Parser a -> Parser ())
+-}
 partB :: Input -> OutputB
 partB = length . filter validPassport . (fmap (Map.delete "cid")) . filter correctFields
   where
