@@ -21,19 +21,36 @@ runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = error "Not implemented yet!"
+inputParser = (many1 letter) `sepBy` endOfLine
 
 ------------ TYPES ------------
-type Input = Void
+type Input = [String]
 
-type OutputA = Void
+type OutputA = Int
 
-type OutputB = Void
+type OutputB = Int
 
 ------------ PART A ------------
+-- We note that the seat representation is basically binary, so we convert to it in a standard way.
+codeToSeatID :: String -> Int
+codeToSeatID =
+  foldl'
+    ( \acc x ->
+        acc * 2
+          + (if x `elem` ("BR" :: String) then 1 else 0)
+    )
+    0
+
 partA :: Input -> OutputA
-partA = error "Not implemented yet!"
+partA = maximum . fmap codeToSeatID
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = error "Not implemented yet!"
+partB = findSeat . sort . fmap codeToSeatID
+  where
+    findSeat sids =
+      head $
+        [ y
+          | y <- [minimum sids .. maximum sids],
+            y `notElem` sids
+        ]
