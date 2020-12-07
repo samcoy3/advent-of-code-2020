@@ -44,12 +44,7 @@ inputParser = Map.fromList <$> rule `sepBy` endOfLine
 ------------ TYPES ------------
 type Colour = String
 
-{-
-We represent the rules as a map from colours to a list of int, colour pairs (representing the bags inside the key bag)
-A Set seems like the logical container for the values, but apparently rules such as:
-  "light red bags contain 1 bright white bag, 2 bright white bags."
-are possible.
--}
+-- We represent the rules as a map from colours to a list of int, colour pairs (representing the bags inside the key bag)
 type BagRules = Map Colour ([(Int, Colour)])
 
 type Input = BagRules
