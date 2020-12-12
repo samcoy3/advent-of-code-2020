@@ -15,6 +15,8 @@ runDay :: Bool -> String -> IO ()
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
+-- We detect Floor here because we need it for the visibility checking in B
+-- We could have used bounds checking, but decided not to
 inputParser :: Parser Input
 inputParser = coordinateParser mapper 0
   where
@@ -34,18 +36,24 @@ type OutputA = Int
 type OutputB = Int
 
 ------------ PART A ------------
+-- Iterates a function until a fixed-point
 iterateUntilStable :: (Eq a) => (a -> a) -> a -> a
 iterateUntilStable f x
   | f x == x = x
   | otherwise = iterateUntilStable f (f x)
 
 neighboursA :: NeighbourhoodFunction
-neighboursA (x, y) = [(a, b) | a <- [x -1 .. x + 1], b <- [y -1 .. y + 1], a /= x || b /= y]
+neighboursA (x, y) =
+  [ (a, b)
+    | a <- [x -1 .. x + 1],
+      b <- [y -1 .. y + 1],
+      a /= x || b /= y
+  ]
 
 evolveSeat ::
   Map (Int, Int) SeatStatus ->
   NeighbourhoodFunction ->
-  Int ->
+  Int -> -- Threshold (4 for A, 5 for B)
   (Int, Int) ->
   SeatStatus ->
   SeatStatus
@@ -62,17 +70,25 @@ evolveSeat m nhood threshold seat status =
             Empty
           | otherwise -> status
 
+-- This function applies the rules given in the question until it's stable, then returns the number of occupied seats
+evolveSeatingArea :: Map (Int, Int) SeatStatus -> NeighbourhoodFunction -> Int -> Int
+evolveSeatingArea seats nfunc thresh =
+  -- We define a Map here to lower the number of lookups during the execution of our function
+  let neighbourMap = Map.fromList $ fmap (\s -> (s,) $ nfunc s) (Map.keys seats)
+   in Map.size
+        . Map.filter (== Occupied)
+        $ iterateUntilStable (\m -> Map.mapWithKey (evolveSeat m (neighbourMap Map.!) thresh) m) seats
+
 partA :: Input -> OutputA
-partA input =
-  Map.size
-    . Map.filter (== Occupied)
-    $ iterateUntilStable (\m -> Map.mapWithKey (evolveSeat m neighboursA 4) m) input
+partA input = evolveSeatingArea input neighboursA 4
 
 ------------ PART B ------------
+-- This function returns a neighbourhood function based on visibility
 neighboursB :: Map (Int, Int) SeatStatus -> NeighbourhoodFunction
 neighboursB m s =
   let vectors = [(a, b) | a <- [-1 .. 1], b <- [-1 .. 1], a /= 0 || b /= 0]
-      (c, d) <+> (a, b) = (c + a, d + b)
+      -- We define Point addition
+      (a, b) <+> (c, d) = (a + c, b + d)
       iterateUntilSeat s vec = case m Map.!? s of
         Just Floor -> iterateUntilSeat (s <+> vec) vec
         Nothing -> Nothing
@@ -82,7 +98,4 @@ neighboursB m s =
 
 partB :: Input -> OutputB
 partB input =
-  let neighbourMap = Map.fromList $ fmap (\s -> (s,) $ neighboursB input s) (Map.keys input)
-   in Map.size
-        . Map.filter (== Occupied)
-        $ iterateUntilStable (\m -> Map.mapWithKey (evolveSeat m (neighbourMap Map.!) 5) m) input
+  evolveSeatingArea input (neighboursB input) 5
