@@ -11,7 +11,6 @@ import Control.Monad.State
 import Control.Monad.ST
 
 import qualified Data.HashTable.ST.Cuckoo as HT
-import System.IO.Unsafe
 {- ORMOLU_ENABLE -}
 
 runDay :: Bool -> String -> IO ()
