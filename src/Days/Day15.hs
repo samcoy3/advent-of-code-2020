@@ -1,16 +1,13 @@
 module Days.Day15 (runDay) where
 
 {- ORMOLU_DISABLE -}
-import Data.List as L
-import qualified Data.Map.Strict as Map
-
 import qualified Program.RunDay as R (runDay)
 import Data.Attoparsec.Text
 
+import qualified Data.Vector.Unboxed.Mutable as MVec
+
 import Control.Monad.State
 import Control.Monad.ST
-
-import qualified Data.HashTable.ST.Cuckoo as HT
 {- ORMOLU_ENABLE -}
 
 runDay :: Bool -> String -> IO ()
@@ -28,25 +25,26 @@ type OutputA = Int
 type OutputB = Int
 
 ------------ PART A ------------
--- An implementation of the memory game in the ST monad, using the hashtables package
+-- An implementation of the memory game, in the ST monad, with unboxed vectors
+-- This runs fast, and is probably the only way to run this fast in Haskell
 playGame :: [Int] -> Int -> Int
 playGame startingNumbers target = runST $ do
-  -- We allocate a hashtable with 5 million buckets. This is roughly enough.
-  prevsMap <- HT.newSized 5_000_000
-  -- Sequence over the input to initialise our hash table.
+  -- Allocates all of our memory up front
+  prevOccurenceVec <- MVec.replicate target (0 :: Int)
+  -- Pre-load our vector with the information from our input
   sequence_ $
-    fmap (\(p, v) -> HT.insert prevsMap v p) (zip [1 ..] $ init startingNumbers)
-  -- Monadically fold over thirty million iterations.
-  -- This is, well, slow. It takes about 2 and a half minutes on my machine.
-  -- Not sure a better implementation in Haskell is possible.
+    fmap (uncurry $ MVec.write prevOccurenceVec) (zip startingNumbers [1 ..])
   let rounds = [length startingNumbers + 1 .. target]
+  -- Performs one round of the memory game
+  -- Should be blazingly fast, consisting of just one lookup and one write
   let performRound prevVal index = do
-        prevOccurence <- HT.lookup prevsMap prevVal
+        prevOccurence <- MVec.read prevOccurenceVec prevVal
         ( return $ case prevOccurence of
-            Nothing -> 0
-            Just e -> (index - e - 1)
+            0 -> 0
+            e -> (index - e - 1)
           )
-          <* HT.insert prevsMap prevVal (index - 1)
+          <* MVec.write prevOccurenceVec prevVal (index - 1)
+  -- We perform a monadic fold over all the rounds; this should return the final value written
   foldM performRound (last startingNumbers) rounds
 
 partA :: Input -> OutputA

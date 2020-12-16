@@ -29,7 +29,6 @@ dependencies:
 - mtl
 - vector
 - pointedlist
-- hashtables
 
 library:
   source-dirs: src
