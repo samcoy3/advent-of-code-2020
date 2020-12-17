@@ -49,6 +49,7 @@ library:
     - DeriveFunctor
     - DeriveFoldable
     - DeriveTraversable
+    - TypeApplications
 
 executables:
   aoc-template-exe:
@@ -75,5 +76,6 @@ executables:
     - DeriveFunctor
     - DeriveFoldable
     - DeriveTraversable
+    - TypeApplications
     dependencies:
     - aoc2020
