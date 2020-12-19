@@ -4,21 +4,11 @@ module Days.Day19 (runDay) where
 import Data.List
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import Data.Maybe
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Vector (Vector)
-import qualified Data.Vector as Vec
-import qualified Util.Util as U
 
 import qualified Program.RunDay as R (runDay)
 import Data.Attoparsec.Text
-import Data.Void
 
 import Control.Applicative.Combinators ((<|>), between)
-import Util.Parsers (around)
-import Control.Monad
-import Debug.Trace (traceShow, traceShowId, trace)
 {- ORMOLU_ENABLE -}
 
 runDay :: Bool -> String -> IO ()
