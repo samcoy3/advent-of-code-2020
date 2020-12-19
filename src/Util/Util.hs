@@ -1,14 +1,9 @@
 module Util.Util where
 
 {- ORMOLU_DISABLE -}
-import Data.List
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
-import Data.Maybe
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Vector (Vector)
-import qualified Data.Vector as Vec
+import Debug.Trace (trace)
 {- ORMOLU_ENABLE -}
 
 {-
@@ -54,3 +49,10 @@ chunksByPredicate p ls
      in if null prefix
           then (chunksByPredicate p $ dropWhile (not . p) rest)
           else prefix : (chunksByPredicate p $ dropWhile (not . p) rest)
+
+-- Allows the user to log out some context and then the result of some expression
+-- For example, supposing a is 2, and b is 5:
+--     Input: traceShowIdWithContext (a, b) $ a + b
+--     Output: (2, 5)	7
+traceShowIdWithContext :: (Show a, Show b) => a -> b -> b
+traceShowIdWithContext context result = trace (show context ++ "\t" ++ show result) result
