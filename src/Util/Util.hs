@@ -56,3 +56,20 @@ chunksByPredicate p ls
 --     Output: (2, 5)	7
 traceShowIdWithContext :: (Show a, Show b) => a -> b -> b
 traceShowIdWithContext context result = trace (show context ++ "\t" ++ show result) result
+
+-- Like !!, but with bounds checking
+(!!?) :: [a] -> Int -> Maybe a
+list !!? index =
+  if
+      | index < 0 -> Nothing
+      | index >= (length list) -> Nothing
+      | otherwise -> Just $ list !! index
+
+-- Given a map where the keys are co-ordinates, returns the minimum x, maximum x, minimum y, and maximum y; in that order.
+mapBoundingBox :: Map (Int, Int) a -> (Int, Int, Int, Int)
+mapBoundingBox m =
+  (,,,)
+    (minimum . fmap fst . Map.keys $ m)
+    (maximum . fmap fst . Map.keys $ m)
+    (minimum . fmap snd . Map.keys $ m)
+    (maximum . fmap snd . Map.keys $ m)
