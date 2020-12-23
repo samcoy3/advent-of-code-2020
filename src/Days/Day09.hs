@@ -4,11 +4,11 @@ module Days.Day09 (runDay) where
 import Data.List as L
 import Data.Maybe
 
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

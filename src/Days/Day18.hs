@@ -3,7 +3,7 @@ module Days.Day18 (runDay) where
 {- ORMOLU_DISABLE -}
 import Data.List
 
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 
 import Data.Functor (($>))
@@ -11,7 +11,7 @@ import Data.Attoparsec.Combinator
 import Control.Applicative.Combinators ((<|>), many, between)
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

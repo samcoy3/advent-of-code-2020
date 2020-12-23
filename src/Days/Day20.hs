@@ -11,7 +11,7 @@ import Data.Vector (Vector)
 import qualified Data.Vector as Vec
 import Util.Util as U
 
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 import Data.Void
 
@@ -20,7 +20,7 @@ import Control.Applicative.Combinators ((<|>))
 import Debug.Trace (traceShowId)
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

@@ -5,7 +5,7 @@ import Data.List
 import Data.Map.Strict (Map)
 import qualified Data.Map.Strict as Map
 
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 
 import Data.Functor
@@ -13,7 +13,7 @@ import Control.Applicative
 import Util.Parsers (around)
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

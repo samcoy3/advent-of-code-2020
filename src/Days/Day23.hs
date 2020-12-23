@@ -9,11 +9,11 @@ import qualified Data.Vector.Unboxed as Vec
 import Control.Monad
 import Control.Monad.ST
 
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

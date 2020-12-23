@@ -1,7 +1,7 @@
 module Days.Day15 (runDay) where
 
 {- ORMOLU_DISABLE -}
-import qualified Program.RunDay as R (runDay)
+import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
 
 import qualified Data.Vector.Unboxed.Mutable as MVec
@@ -10,7 +10,7 @@ import Control.Monad.State
 import Control.Monad.ST
 {- ORMOLU_ENABLE -}
 
-runDay :: Bool -> String -> IO ()
+runDay :: R.Day
 runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------

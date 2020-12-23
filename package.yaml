@@ -20,6 +20,8 @@ description:         My Advent of Code solutions for 2020, written in Haskell.
 
 dependencies:
 - base >= 4.7 && < 5
+- time
+- ansi-terminal
 - directory
 - optparse-applicative
 - parser-combinators
