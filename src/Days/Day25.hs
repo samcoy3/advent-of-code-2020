@@ -2,18 +2,13 @@ module Days.Day25 (runDay) where
 
 {- ORMOLU_DISABLE -}
 import Data.List
-import Data.Map.Strict (Map)
-import qualified Data.Map.Strict as Map
 import Data.Maybe
-import Data.Set (Set)
-import qualified Data.Set as Set
-import Data.Vector (Vector)
-import qualified Data.Vector as Vec
-import qualified Util.Util as U
 
 import qualified Program.RunDay as R (runDay, Day)
 import Data.Attoparsec.Text
-import Data.Void
+
+import Util.Parsers
+import Debug.Trace (traceShowId)
 {- ORMOLU_ENABLE -}
 
 runDay :: R.Day
@@ -21,19 +16,24 @@ runDay = R.runDay inputParser partA partB
 
 ------------ PARSER ------------
 inputParser :: Parser Input
-inputParser = error "Not implemented yet!"
+inputParser = decimal `around` endOfLine
 
 ------------ TYPES ------------
-type Input = Void
+type Input = (Int, Int)
 
-type OutputA = Void
+type OutputA = Int
 
-type OutputB = Void
+type OutputB = String
 
 ------------ PART A ------------
+loop :: Int -> Int -> Int
+loop subjectNumber n = (n * subjectNumber) `mod` 20_201_227
+
 partA :: Input -> OutputA
-partA = error "Not implemented yet!"
+partA (x, y) =
+  let xIters = traceShowId . fromJust $ findIndex (== x) (iterate (loop 7) 1)
+   in foldr1 (.) (replicate xIters (loop y)) $ 1
 
 ------------ PART B ------------
 partB :: Input -> OutputB
-partB = error "Not implemented yet!"
+partB = const "Thank you for the star, Rudolph!"
